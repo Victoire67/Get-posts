@@ -1,4 +1,6 @@
 export default function Fetcher() {
+    //Should use a custom hook 
+    
   return (
     <form action="" className="shadow-[0_0_15px_5px_rgba(0,0,0,0.1)] p-8 rounded-md">
       <h1 className="text-xl font-bold">Fetch posts</h1>
