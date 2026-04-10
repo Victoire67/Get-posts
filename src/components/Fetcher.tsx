@@ -5,18 +5,25 @@ import { type Post } from "../getPost.ts";
 import PostElement, { type PostProps } from "./Post.tsx";
 
 export default function Fetcher() {
+  let [pageSection, setPageSection] = useState(10);
   let [url, setUrl] = useState("");
   let [postData, setPost, error] = usePost(url);
 
-  console.log(postData);
-  // We want to call getPost but it's inside a non component function and react forbids this .
-  // We need a trigger that changes that and trigger it .
-  console.log(url);
+  function handlePrev() {
+    setPageSection((previous: number): number => {
+      return previous <= 10 ? 90 : previous - 10;
+    });
+  }
 
+  function handleNext() {
+    setPageSection((previous: number): number => {
+      return previous >= 90 ? 10 : previous + 10;
+    });
+  }
   function handleSubmit(data: any) {
-    // this shoudl make a request based on the value of this
     setUrl(data.get("url"));
   }
+
   let postElements: any[] =
     typeof postData === "object"
       ? (postData.map(
@@ -29,20 +36,38 @@ export default function Fetcher() {
             },
             i: number,
           ) => {
-            if (i > 3) return;
-            return (
-              <PostElement
-                postHeader={post.title}
-                userId={post.userId}
-                postId={post.id}
-                key={post.id}
-                description={post.body}
-              />
-            );
+            if (i === 0) {
+              if (i + 1 <= pageSection) {
+                return (
+                  <PostElement
+                    postHeader={post.title}
+                    userId={post.userId}
+                    postId={post.id}
+                    key={post.id}
+                    description={post.body}
+                  />
+                );
+              } else {
+                return;
+              }
+            } else {
+              if (i + 1 <= pageSection && i + 10 >= pageSection - 10) {
+                return (
+                  <PostElement
+                    postHeader={post.title}
+                    userId={post.userId}
+                    postId={post.id}
+                    key={post.id}
+                    description={post.body}
+                  />
+                );
+              } else return;
+            }
           },
         ) as any)
       : [<span></span>];
-  console.log(postElements);
+  postElements = postElements.filter((el) => el !== undefined);
+  if (postElements.length > 10) postElements = postElements.slice(10, Infinity);
   return (
     <>
       <form
@@ -68,7 +93,28 @@ export default function Fetcher() {
           />
         </div>
       </form>
-      <div >{...postElements}</div>
+      {postElements.length > 1 && (
+        <div className="flex place-content-between items-center my-4">
+          <h1 className="text-2xl font-bol">Posts({postData.length})</h1>
+          <div className="flex items-center gap-2">
+            <button
+              className="p-4 rounded-sm bg-gray-200 font-semibold"
+              onClick={handlePrev}
+            >
+              {" "}
+              {"< Previous"}{" "}
+            </button>
+            <p>Page {pageSection / 10} of 10 </p>
+            <button
+              className="p-4 rounded-sm bg-gray-200 font-semibold"
+              onClick={handleNext}
+            >
+              {"Next >"}
+            </button>
+          </div>
+        </div>
+      )}
+      <div>{...postElements}</div>
     </>
   );
 }
