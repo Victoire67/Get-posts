@@ -17,15 +17,19 @@ export default function Fetcher() {
     // this shoudl make a request based on the value of this
     setUrl(data.get("url"));
   }
-  let postElements: string | any[] =
+  let postElements: any[] =
     typeof postData === "object"
       ? (postData.map(
-          (post: {
-            title: string;
-            userId: number;
-            id: number;
-            body: string;
-          }) => {
+          (
+            post: {
+              title: string;
+              userId: number;
+              id: number;
+              body: string;
+            },
+            i: number,
+          ) => {
+            if (i > 3) return;
             return (
               <PostElement
                 postHeader={post.title}
@@ -37,7 +41,7 @@ export default function Fetcher() {
             );
           },
         ) as any)
-      : ("" as string);
+      : [<span></span>];
   console.log(postElements);
   return (
     <>
@@ -64,7 +68,7 @@ export default function Fetcher() {
           />
         </div>
       </form>
-      <div>{...postElements as any[]}</div>
+      <div >{...postElements}</div>
     </>
   );
 }

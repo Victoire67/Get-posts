@@ -6,7 +6,7 @@ function App() {
 
 
   return (
-      <div className="grid place-content-center items-center h-128">
+      <div className="grid place-content-center items-center ">
         <Header />
         <Fetcher />
       </div>
