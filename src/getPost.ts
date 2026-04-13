@@ -26,14 +26,12 @@ export default function usePost(url: string) {
                 setPosts(result)
                 setIsloading(false)
             }).catch(err => {
-                console.log("An error happend up !")
                 setIsloading(false)
                 throw new Error(err)
             })
         } catch (error) {
             reqError = error as string;
             setIsloading(false)
-            console.log("An error happended")
             throw new Error(reqError)
         }
     }, [url])
