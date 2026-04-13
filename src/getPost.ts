@@ -20,20 +20,24 @@ export default function usePost(url: string) {
     let reqError: string = "Success ! no Error !"
 
     useEffect(() => {
-        try {
-            setIsloading(true)
-            fetch(url).then(result => result.json()).then(result => {
-                setPosts(result)
-                setIsloading(false)
-            }).catch(err => {
-                setIsloading(false)
-                throw new Error(err)
-            })
-        } catch (error) {
-            reqError = error as string;
-            setIsloading(false)
-            throw new Error(reqError)
+        async function getThisData() {
+            try {
+                setIsloading(true)
+                let result = await fetch(url);
+                result = await result.json();
+                setPosts(result);
+
+            }
+            catch (error) {
+                reqError = error as string;
+                throw new Error(reqError)
+            }
+            finally {
+                setIsloading(false);
+            }
         }
+        getThisData();
+
     }, [url])
     return [posts, setPosts, reqError, isLoading]
 }
